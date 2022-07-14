@@ -1,0 +1,43 @@
+{
+  "name": "kusama-staking",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "init": "node db/init.js",
+    "db:migrate": "node db/init.js",
+    "processor:migrate": "echo skip",
+    "processor:start": "node lib/processor.js",
+    "processor:debug": "node -r dotenv/config lib/processor.js",
+    "query-node:start": "squid-graphql-server"
+  },
+  "dependencies": {
+    "@subsquid/cli": "^0.5.1",
+    "@subsquid/graphql-server": "^1.1.0",
+    "@subsquid/ss58": "^0.1.0",
+    "@subsquid/substrate-processor": "^1.4.1",
+    "@subsquid/typeorm-store": "^0.1.1",
+    "dotenv": "^16.0.1",
+    "npm-run-all": "^4.1.5",
+    "pg": "^8.7.3",
+    "reflect-metadata": "^0.1.13",
+    "snake-case": "^3.0.4",
+    "type-graphql": "^1.2.0-rc.1"
+  },
+  "devDependencies": {
+    "@subsquid/substrate-metadata-explorer": "^1.0.4",
+    "@subsquid/substrate-typegen": "^1.1.0",
+    "@subsquid/typeorm-codegen": "^0.1.0",
+    "@subsquid/typeorm-migration": "^0.1.1",
+    "@types/node": "^16.11.43",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-sonarjs": "^0.13.0",
+    "prettier": "2.7.1",
+    "prettier-eslint": "^15.0.1",
+    "typescript": "~4.7.4"
+  }
+}
