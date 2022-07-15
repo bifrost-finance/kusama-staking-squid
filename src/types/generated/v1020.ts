@@ -1032,6 +1032,12 @@ export interface StakingLedger {
   unlocking: UnlockChunk[]
 }
 
+export interface Nominations {
+  targets: AccountId[]
+  submittedIn: EraIndex
+  suppressed: boolean
+}
+
 export interface Exposure {
   total: bigint
   own: bigint

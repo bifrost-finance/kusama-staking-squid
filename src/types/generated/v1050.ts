@@ -46,6 +46,8 @@ export interface Exposure {
   others: IndividualExposure[]
 }
 
+export type BalanceOf = bigint
+
 export interface StakingLedger {
   stash: AccountId
   total: bigint

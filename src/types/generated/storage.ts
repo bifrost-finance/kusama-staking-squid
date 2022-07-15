@@ -3,89 +3,8 @@ import {Block, Chain, ChainContext, BlockContext, Result} from './support'
 import * as v1020 from './v1020'
 import * as v1050 from './v1050'
 import * as v1058 from './v1058'
-import * as v9010 from './v9010'
+import * as v2028 from './v2028'
 import * as v9111 from './v9111'
-import * as v9180 from './v9180'
-
-export class CrowdloanFundsStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
-
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  get isV9010() {
-    return this._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === 'eb9089ef4c01c54f3287c4396bf755b671cecb8b45487320ccd4d35e3df76840'
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  async getAsV9010(key: v9010.ParaId): Promise<v9010.FundInfo | undefined> {
-    assert(this.isV9010)
-    return this._chain.getStorage(this.blockHash, 'Crowdloan', 'Funds', key)
-  }
-
-  async getManyAsV9010(keys: v9010.ParaId[]): Promise<(v9010.FundInfo | undefined)[]> {
-    assert(this.isV9010)
-    return this._chain.queryStorage(this.blockHash, 'Crowdloan', 'Funds', keys.map(k => [k]))
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  get isV9111() {
-    return this._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === '12ab1ac19ae156d5acf61b3bdb7d29a147b5793947baca0144497ee7e32553c2'
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  async getAsV9111(key: v9111.Id): Promise<v9111.FundInfo | undefined> {
-    assert(this.isV9111)
-    return this._chain.getStorage(this.blockHash, 'Crowdloan', 'Funds', key)
-  }
-
-  async getManyAsV9111(keys: v9111.Id[]): Promise<(v9111.FundInfo | undefined)[]> {
-    assert(this.isV9111)
-    return this._chain.queryStorage(this.blockHash, 'Crowdloan', 'Funds', keys.map(k => [k]))
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  get isV9180() {
-    return this._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === 'e837aa8c7af80bff126d455e0237189b2b62b5bf6586a1f2e67a22edfaf5a596'
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  async getAsV9180(key: v9180.Id): Promise<v9180.FundInfo | undefined> {
-    assert(this.isV9180)
-    return this._chain.getStorage(this.blockHash, 'Crowdloan', 'Funds', key)
-  }
-
-  async getManyAsV9180(keys: v9180.Id[]): Promise<(v9180.FundInfo | undefined)[]> {
-    assert(this.isV9180)
-    return this._chain.queryStorage(this.blockHash, 'Crowdloan', 'Funds', keys.map(k => [k]))
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Crowdloan', 'Funds') != null
-  }
-}
 
 export class SessionValidatorsStorage {
   private readonly _chain: Chain
@@ -309,6 +228,50 @@ export class StakingErasStakersStorage {
   }
 }
 
+export class StakingErasValidatorRewardStorage {
+  private readonly _chain: Chain
+  private readonly blockHash: string
+
+  constructor(ctx: BlockContext)
+  constructor(ctx: ChainContext, block: Block)
+  constructor(ctx: BlockContext, block?: Block) {
+    block = block || ctx.block
+    this.blockHash = block.hash
+    this._chain = ctx._chain
+  }
+
+  /**
+   *  The total validator era payout for the last `HISTORY_DEPTH` eras.
+   * 
+   *  Eras that haven't finished yet or has been removed doesn't have reward.
+   */
+  get isV1050() {
+    return this._chain.getStorageItemTypeHash('Staking', 'ErasValidatorReward') === '3780d76d37a3d09046e926a777def6003178c440a915a931a34a74b88a4094a5'
+  }
+
+  /**
+   *  The total validator era payout for the last `HISTORY_DEPTH` eras.
+   * 
+   *  Eras that haven't finished yet or has been removed doesn't have reward.
+   */
+  async getAsV1050(key: v1050.EraIndex): Promise<v1050.BalanceOf | undefined> {
+    assert(this.isV1050)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'ErasValidatorReward', key)
+  }
+
+  async getManyAsV1050(keys: v1050.EraIndex[]): Promise<(v1050.BalanceOf | undefined)[]> {
+    assert(this.isV1050)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasValidatorReward', keys.map(k => [k]))
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this._chain.getStorageItemTypeHash('Staking', 'ErasValidatorReward') != null
+  }
+}
+
 export class StakingLedgerStorage {
   private readonly _chain: Chain
   private readonly blockHash: string
@@ -386,6 +349,52 @@ export class StakingLedgerStorage {
    */
   get isExists(): boolean {
     return this._chain.getStorageItemTypeHash('Staking', 'Ledger') != null
+  }
+}
+
+export class StakingNominatorsStorage {
+  private readonly _chain: Chain
+  private readonly blockHash: string
+
+  constructor(ctx: BlockContext)
+  constructor(ctx: ChainContext, block: Block)
+  constructor(ctx: BlockContext, block?: Block) {
+    block = block || ctx.block
+    this.blockHash = block.hash
+    this._chain = ctx._chain
+  }
+
+  /**
+   *  The map from nominator stash key to the set of stash keys of all validators to nominate.
+   * 
+   *  NOTE: is private so that we can ensure upgraded before all typical accesses.
+   *  Direct storage APIs can still bypass this protection.
+   */
+  get isV1020() {
+    return this._chain.getStorageItemTypeHash('Staking', 'Nominators') === 'a72d3e17e59f46bbd05fb0efd27052437fe2b1c41b0c89fe950edfb3b79e3c78'
+  }
+
+  /**
+   *  The map from nominator stash key to the set of stash keys of all validators to nominate.
+   * 
+   *  NOTE: is private so that we can ensure upgraded before all typical accesses.
+   *  Direct storage APIs can still bypass this protection.
+   */
+  async getAsV1020(key: v1020.AccountId): Promise<v1020.Nominations | undefined> {
+    assert(this.isV1020)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'Nominators', key)
+  }
+
+  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.Nominations | undefined)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Nominators', keys.map(k => [k]))
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this._chain.getStorageItemTypeHash('Staking', 'Nominators') != null
   }
 }
 
@@ -492,5 +501,65 @@ export class StakingStakersStorage {
    */
   get isExists(): boolean {
     return this._chain.getStorageItemTypeHash('Staking', 'Stakers') != null
+  }
+}
+
+export class StakingValidatorsStorage {
+  private readonly _chain: Chain
+  private readonly blockHash: string
+
+  constructor(ctx: BlockContext)
+  constructor(ctx: ChainContext, block: Block)
+  constructor(ctx: BlockContext, block?: Block) {
+    block = block || ctx.block
+    this.blockHash = block.hash
+    this._chain = ctx._chain
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  get isV1020() {
+    return this._chain.getStorageItemTypeHash('Staking', 'Validators') === '3f9d4868d833266bf0b4658a23fbe9b816c5eafdf27cd8520d058526e27af4c5'
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  async getAsV1020(key: v1020.AccountId): Promise<v1020.ValidatorPrefs> {
+    assert(this.isV1020)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'Validators', key)
+  }
+
+  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.ValidatorPrefs)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators', keys.map(k => [k]))
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  get isV2028() {
+    return this._chain.getStorageItemTypeHash('Staking', 'Validators') === 'fa08b7a9cd071c2833987f5924d940cf66842072b85af5ecfc3afcf9fbb2ebd0'
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  async getAsV2028(key: v2028.AccountId): Promise<v2028.ValidatorPrefs> {
+    assert(this.isV2028)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'Validators', key)
+  }
+
+  async getManyAsV2028(keys: v2028.AccountId[]): Promise<(v2028.ValidatorPrefs)[]> {
+    assert(this.isV2028)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators', keys.map(k => [k]))
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this._chain.getStorageItemTypeHash('Staking', 'Validators') != null
   }
 }

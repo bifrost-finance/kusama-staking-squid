@@ -4,7 +4,8 @@
     "project": "./tsconfig.json"
   },
   "plugins": [
-    "sonarjs"
+    "sonarjs",
+    "@typescript-eslint"
   ],
   "rules": {
     "max-len": [
@@ -17,6 +18,7 @@
       }
     ]
   },
+  "files": ["*.ts", "*.tsx"],
   "extends": [
     "plugin:@typescript-eslint/recommended",
     "plugin:sonarjs/recommended",

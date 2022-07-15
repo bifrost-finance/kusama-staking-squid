@@ -13,7 +13,7 @@ processor.setDataSource(config.dataSource)
 processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
-//events handlers
+// events handlers
 processor.addEventHandler('Staking.Rewarded', modules.staking.events.handleRewarded)
 // processor.addEventHandler('Staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
 processor.addEventHandler('Staking.Slashed', modules.staking.events.handleSlashed)
@@ -21,7 +21,7 @@ processor.addEventHandler('Staking.Slash', modules.staking.events.handleSlash) /
 
 processor.addEventHandler('Grandpa.NewAuthorities', modules.grandpa.events.handleNewAuthorities)
 
-//extrinsics handlers
+// extrinsics handlers
 processor.addCallHandler('Staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
 processor.addCallHandler('Staking.bond', modules.staking.extrinsics.handleBond)
 processor.addCallHandler('Staking.bond_extra', modules.staking.extrinsics.handleBondExtra)
@@ -32,26 +32,6 @@ processor.addCallHandler('Staking.nominate', modules.staking.extrinsics.handleNo
 processor.addCallHandler('Staking.validate', modules.staking.extrinsics.handleValidate)
 processor.addCallHandler('Staking.chill', modules.staking.extrinsics.handleChill)
 
-processor.addCallHandler(
-    'Balances.transfer',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleTransfer
-)
-processor.addCallHandler(
-    'Balances.transfer_keep_alive',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleTransferKeepAlive
-)
-processor.addCallHandler(
-    'Balances.force_transfer',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleForceTransfer
-)
-processor.addCallHandler(
-    'Balances.transfer_all',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleTransferAll
-)
 // processor.addCallHandler('System.remark', modules.remark.handleRemark)
 // processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
 //     console.log(ctx.block.height, ctx.items)

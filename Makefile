@@ -11,21 +11,21 @@ serve:
 
 .PHONY: migrate # run migrate
 migrate:
-	@npx squid-typeorm-migration apply
+	@npx sqd db migrate
 
-.PHONY: migration # generate migration
-migration:
-	@npx squid-typeorm-migration generate
+.PHONY: createdb # create db
+createdb:
+	@npx sqd db create
 
 .PHONY: build # build typescript files
 build:
 	@npm run build
 
-.PHONY: codegen # run codegen
+.PHONY: codegen # generate TypeORM classes from schema.graphql
 codegen:
-	@npx squid-typeorm-codegen
+	@npx sqd codegen
 
-.PHONY: typegen # run typegen
+.PHONY: typegen # generate type-safe wrappers for events, calls and storage items
 typegen: explore
 	@npx squid-substrate-typegen ./typegen/typegen.json
 

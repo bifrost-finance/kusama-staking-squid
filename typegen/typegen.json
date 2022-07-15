@@ -12,16 +12,9 @@
     "Staking.Unbonded",
     "Staking.Withdrawn",
     "Staking.PayoutStarted",
-    "Crowdloan.Contributed",
-    "Crowdloan.Dissolved",
-    "Crowdloan.Created",
     "Grandpa.NewAuthorities"
   ],
   "calls": [
-    "Balances.transfer",
-    "Balances.force_transfer",
-    "Balances.transfer_keep_alive",
-    "Balances.transfer_all",
     "Staking.payout_stakers",
     "Staking.bond",
     "Staking.bond_extra",
@@ -35,7 +28,6 @@
     "System.remark"
   ],
   "storage": [
-    "Crowdloan.Funds",
     "Staking.Bonded",
     "Staking.Payee",
     "Staking.CurrentEra",
@@ -43,6 +35,9 @@
     "Staking.Ledger",
     "Staking.ErasStakers",
     "Staking.Stakers",
-    "Session.Validators"
+    "Session.Validators",
+    "Staking.Validators",
+    "Staking.Nominators",
+    "Staking.ErasValidatorReward"
   ]
 }

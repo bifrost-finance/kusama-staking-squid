@@ -6,12 +6,12 @@ const config: ProcessorConfig = {
     prefix: 'kusama',
     dataSource: {
         archive: 'https://kusama.archive.subsquid.io/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        chain: 'wss://kusama-rpc.polkadot.io', // 'wss://kusama.api.onfinality.io/public-ws'
     },
     typesBundle: 'kusama',
     batchSize: 100,
     blockRange: {
-        from: 13500000,
+        from: 13200000,
     },
 }
 

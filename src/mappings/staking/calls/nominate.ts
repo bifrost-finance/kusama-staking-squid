@@ -40,7 +40,7 @@ function getCallData(ctx: CallContext): CallData | undefined {
 export async function handleNominate(ctx: CallHandlerContext) {
     if (!ctx.call.success) return
 
-    const data = getCallData(ctx)
+    // const data = getCallData(ctx)
 
     const controllerId = getOriginAccountId(ctx.call.origin)
     if (!controllerId) return
