@@ -178,6 +178,48 @@ export class StakingCurrentEraStorage {
   }
 }
 
+export class StakingErasRewardPointsStorage {
+  private readonly _chain: Chain
+  private readonly blockHash: string
+
+  constructor(ctx: BlockContext)
+  constructor(ctx: ChainContext, block: Block)
+  constructor(ctx: BlockContext, block?: Block) {
+    block = block || ctx.block
+    this.blockHash = block.hash
+    this._chain = ctx._chain
+  }
+
+  /**
+   *  Rewards for the last `HISTORY_DEPTH` eras.
+   *  If reward hasn't been set or has been removed then 0 reward is returned.
+   */
+  get isV1050() {
+    return this._chain.getStorageItemTypeHash('Staking', 'ErasRewardPoints') === '48c202c7b8424da56b623834c54ceaf74129dbd88a59c39931cc7ba131501b50'
+  }
+
+  /**
+   *  Rewards for the last `HISTORY_DEPTH` eras.
+   *  If reward hasn't been set or has been removed then 0 reward is returned.
+   */
+  async getAsV1050(key: v1050.EraIndex): Promise<v1050.EraRewardPoints> {
+    assert(this.isV1050)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'ErasRewardPoints', key)
+  }
+
+  async getManyAsV1050(keys: v1050.EraIndex[]): Promise<(v1050.EraRewardPoints)[]> {
+    assert(this.isV1050)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasRewardPoints', keys.map(k => [k]))
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this._chain.getStorageItemTypeHash('Staking', 'ErasRewardPoints') != null
+  }
+}
+
 export class StakingErasStakersStorage {
   private readonly _chain: Chain
   private readonly blockHash: string

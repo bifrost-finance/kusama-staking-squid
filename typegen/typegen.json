@@ -38,6 +38,7 @@
     "Session.Validators",
     "Staking.Validators",
     "Staking.Nominators",
-    "Staking.ErasValidatorReward"
+    "Staking.ErasValidatorReward",
+    "Staking.ErasRewardPoints"
   ]
 }

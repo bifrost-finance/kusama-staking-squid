@@ -40,6 +40,11 @@ export interface ActiveEraInfo {
 
 export type EraIndex = number
 
+export interface EraRewardPoints {
+  total: RewardPoint
+  individual: [AccountId, RewardPoint][]
+}
+
 export interface Exposure {
   total: bigint
   own: bigint
@@ -57,6 +62,8 @@ export interface StakingLedger {
 }
 
 export type Moment = bigint
+
+export type RewardPoint = number
 
 export interface IndividualExposure {
   who: AccountId

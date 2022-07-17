@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { isStorageCorrupted } from '../../../common/tools'
+import { isStorageCorrupted, decodeId, encodeId } from '../../../common/tools'
 import { Era, EraNomination, EraStaker, StakingRole } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
@@ -32,6 +32,8 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         startedAt: ctx.block.height,
         timestamp: new Date(activeEraData?.timestamp || ctx.block.timestamp),
     })
+
+    ctx.log.info(`Handling new authorities event in era ${era}`)
 
     const stakingData = await getStakingData(ctx, era)
     if (!stakingData) return
@@ -70,6 +72,16 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
     const nominatorIds: string[] = []
     const nominationsData: PairData[] = []
 
+    const totalErasValidatorReward = await storage.staking.getErasValidatorReward(prevCtx, era.index)
+    if (!totalErasValidatorReward) {
+        return ctx.log.info(`Missing total eras validator reward for validator in era ${era}`)
+    }
+
+    const erasRewardPoints = await storage.staking.getErasRewardPoints(prevCtx, era.index)
+    if (!erasRewardPoints) {
+        return ctx.log.info(`Missing eras reward points for validatorin era ${era}`)
+    }
+
     for (let i = 0; i < validatorIds.length; i++) {
         const validatorId = validatorIds[i]
         const validatorData = validatorsData[i]
@@ -85,6 +97,21 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
         assert(staker != null)
 
+        const validatorInfo = await storage.staking.getValidators(prevCtx, validatorId)
+        if (!validatorInfo) {
+            ctx.log.info(`Missing validators info for validator ${validatorId} in era ${era}`)
+            continue
+        }
+
+        let totalReward: bigint = BigInt(0)
+        erasRewardPoints.individual.forEach((points, point) => {
+            if (points.length === 2) {
+                if (encodeId(points[0]) === validatorId && erasRewardPoints.total != 0) {
+                    totalReward = BigInt(points[1])/BigInt(erasRewardPoints.total)*totalErasValidatorReward
+                }
+            }
+        })
+
         validators.set(
             validatorId,
             new EraStaker({
@@ -93,9 +120,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
                 staker,
                 totalBonded: validatorData.total,
                 selfBonded: validatorData.own,
-                totalReward: staker.totalReward,
+                totalReward: totalReward,
                 totalSlash: staker.totalSlash,
                 role: StakingRole.Validator,
+                commission: validatorInfo.commission,
             })
         )
 
@@ -146,7 +174,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
         assert(validator != null && nominator != null)
 
-        const id = `${era.index}-${validator.stakerId}-${nominator.stakerId}`
+        const id = `${era.index}-${validator}-${nominator}`
         nominations.set(
             id,
             new EraNomination({

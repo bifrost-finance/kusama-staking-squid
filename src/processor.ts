@@ -7,6 +7,8 @@ import { TypeormDatabase } from '@subsquid/typeorm-store'
 const database = new TypeormDatabase()
 const processor = new SubstrateProcessor(database)
 
+console.log(config)
+
 processor.setTypesBundle(config.typesBundle)
 processor.setBatchSize(config.batchSize || DEFAULT_BATCH_SIZE)
 processor.setDataSource(config.dataSource)
@@ -14,7 +16,7 @@ processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
 // events handlers
-processor.addEventHandler('Staking.Rewarded', modules.staking.events.handleRewarded)
+// processor.addEventHandler('Staking.Rewarded', modules.staking.events.handleRewarded)
 // processor.addEventHandler('Staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
 processor.addEventHandler('Staking.Slashed', modules.staking.events.handleSlashed)
 processor.addEventHandler('Staking.Slash', modules.staking.events.handleSlash) //Old name of Slashed event

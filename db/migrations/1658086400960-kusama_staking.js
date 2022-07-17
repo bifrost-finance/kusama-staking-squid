@@ -1,14 +1,7 @@
-module.exports = class kusama_staking1657757221815 {
-  name = 'kusama_staking1657757221815'
+module.exports = class kusama_staking1658086400960 {
+  name = 'kusama_staking1658086400960'
 
   async up(db) {
-    await db.query(`CREATE TABLE "transfer" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "block_number" integer NOT NULL, "extrinsic_hash" text NOT NULL, "to" jsonb, "from" jsonb NOT NULL, "asset" jsonb NOT NULL, "success" boolean NOT NULL, "type" character varying(12) NOT NULL, CONSTRAINT "PK_fd9ddbdd49a17afcbe014401295" PRIMARY KEY ("id"))`)
-    await db.query(`CREATE INDEX "IDX_d6624eacc30144ea97915fe846" ON "transfer" ("block_number") `)
-    await db.query(`CREATE INDEX "IDX_070c555a86b0b41a534a55a659" ON "transfer" ("extrinsic_hash") `)
-    await db.query(`CREATE INDEX "IDX_d0b7149e0dea3bfc1ffa8742a2" ON "transfer" ("success") `)
-    await db.query(`CREATE TABLE "account_transfer" ("id" character varying NOT NULL, "direction" character varying(4), "transfer_id" character varying, "account_id" character varying NOT NULL, CONSTRAINT "PK_3b959a286b97fc83be6cec239a9" PRIMARY KEY ("id"))`)
-    await db.query(`CREATE INDEX "IDX_2c2313461bd6c19983900ef539" ON "account_transfer" ("transfer_id") `)
-    await db.query(`CREATE INDEX "IDX_d5240d17696e229585da974641" ON "account_transfer" ("account_id") `)
     await db.query(`CREATE TABLE "era" ("id" character varying NOT NULL, "index" integer NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "started_at" integer NOT NULL, "ended_at" integer, "total" numeric NOT NULL, "validators_count" integer NOT NULL, "nominators_count" integer NOT NULL, CONSTRAINT "PK_a30749cdf0189d890a8dbc9aa7d" PRIMARY KEY ("id"))`)
     await db.query(`CREATE TABLE "era_nomination" ("id" character varying NOT NULL, "vote" numeric NOT NULL, "era_id" character varying NOT NULL, "nominator_id" character varying, "validator_id" character varying, CONSTRAINT "PK_4209193432151f1cbd32a32dc73" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_8d0f2c79f04ed0571d6d8f3f1c" ON "era_nomination" ("era_id") `)
@@ -39,8 +32,6 @@ module.exports = class kusama_staking1657757221815 {
     await db.query(`CREATE INDEX "IDX_d244ddc409b7278fcd1e8e54da" ON "reward" ("staker_id") `)
     await db.query(`CREATE INDEX "IDX_b1c227ef81daeda29c93409abe" ON "reward" ("call_id") `)
     await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "last_update_block" integer NOT NULL, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
-    await db.query(`ALTER TABLE "account_transfer" ADD CONSTRAINT "FK_2c2313461bd6c19983900ef539c" FOREIGN KEY ("transfer_id") REFERENCES "transfer"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-    await db.query(`ALTER TABLE "account_transfer" ADD CONSTRAINT "FK_d5240d17696e229585da974641a" FOREIGN KEY ("account_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "era_nomination" ADD CONSTRAINT "FK_8d0f2c79f04ed0571d6d8f3f1c5" FOREIGN KEY ("era_id") REFERENCES "era"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "era_nomination" ADD CONSTRAINT "FK_fc284e4e8adda73aa3e26b1bc80" FOREIGN KEY ("nominator_id") REFERENCES "era_staker"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "era_nomination" ADD CONSTRAINT "FK_8001c7914ea1cc7ebaf239b4433" FOREIGN KEY ("validator_id") REFERENCES "era_staker"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -58,13 +49,6 @@ module.exports = class kusama_staking1657757221815 {
   }
 
   async down(db) {
-    await db.query(`DROP TABLE "transfer"`)
-    await db.query(`DROP INDEX "public"."IDX_d6624eacc30144ea97915fe846"`)
-    await db.query(`DROP INDEX "public"."IDX_070c555a86b0b41a534a55a659"`)
-    await db.query(`DROP INDEX "public"."IDX_d0b7149e0dea3bfc1ffa8742a2"`)
-    await db.query(`DROP TABLE "account_transfer"`)
-    await db.query(`DROP INDEX "public"."IDX_2c2313461bd6c19983900ef539"`)
-    await db.query(`DROP INDEX "public"."IDX_d5240d17696e229585da974641"`)
     await db.query(`DROP TABLE "era"`)
     await db.query(`DROP TABLE "era_nomination"`)
     await db.query(`DROP INDEX "public"."IDX_8d0f2c79f04ed0571d6d8f3f1c"`)
@@ -95,8 +79,6 @@ module.exports = class kusama_staking1657757221815 {
     await db.query(`DROP INDEX "public"."IDX_d244ddc409b7278fcd1e8e54da"`)
     await db.query(`DROP INDEX "public"."IDX_b1c227ef81daeda29c93409abe"`)
     await db.query(`DROP TABLE "account"`)
-    await db.query(`ALTER TABLE "account_transfer" DROP CONSTRAINT "FK_2c2313461bd6c19983900ef539c"`)
-    await db.query(`ALTER TABLE "account_transfer" DROP CONSTRAINT "FK_d5240d17696e229585da974641a"`)
     await db.query(`ALTER TABLE "era_nomination" DROP CONSTRAINT "FK_8d0f2c79f04ed0571d6d8f3f1c5"`)
     await db.query(`ALTER TABLE "era_nomination" DROP CONSTRAINT "FK_fc284e4e8adda73aa3e26b1bc80"`)
     await db.query(`ALTER TABLE "era_nomination" DROP CONSTRAINT "FK_8001c7914ea1cc7ebaf239b4433"`)
