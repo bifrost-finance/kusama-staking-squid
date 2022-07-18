@@ -27,13 +27,13 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
     }
 
     const era = new Era({
-        id: storageEraData.index.toString(),
-        index: storageEraData.index,
+        id: (storageEraData.index-1).toString(),
+        index: storageEraData.index-1,
         startedAt: ctx.block.height,
         timestamp: new Date(activeEraData?.timestamp || ctx.block.timestamp),
     })
 
-    ctx.log.info(`Handling new authorities event in era ${era} index ${era.index}`)
+    ctx.log.info(`Handling new authorities event last era ${era} index ${era.index}`)
 
     const stakingData = await getStakingData(ctx, era)
     if (!stakingData) return
@@ -53,12 +53,12 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
 async function getStakingData(ctx: EventHandlerContext, era: Era) {
     const validators: Map<string, EraStaker> = new Map()
 
-    const validatorIds = await storage.session.getValidators(ctx)
+    const prevCtx = createPrevStorageContext(ctx)
+
+    const validatorIds = await storage.session.getValidators(prevCtx)
     if (!validatorIds) {
         return ctx.log.warn(`Validators for era ${era} not found`)
     }
-
-    const prevCtx = createPrevStorageContext(ctx)
 
     const validatorsData = await storage.staking.getEraStakersData(
         prevCtx,
@@ -72,12 +72,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
     const nominatorIds: string[] = []
     const nominationsData: PairData[] = []
 
-    let totalErasValidatorReward = await storage.staking.getErasValidatorReward(ctx, era.index)
+    const totalErasValidatorReward = await storage.staking.getErasValidatorReward(ctx, era.index)
     if (!totalErasValidatorReward) {
-        // return ctx.log.info(`Missing total eras validator reward for validator ${totalErasValidatorReward} in era ${era}`)'
-        ctx.log.info(`Missing total eras validator reward for validator ${totalErasValidatorReward} in era ${era}`)
+        return ctx.log.info(`Missing total eras validator reward for validator ${totalErasValidatorReward} in era ${era}`)
     }
-    totalErasValidatorReward = BigInt(804757614810339)
 
     const erasRewardPoints = await storage.staking.getErasRewardPoints(ctx, era.index)
     if (!erasRewardPoints) {
@@ -176,7 +174,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
         assert(validator != null && nominator != null)
 
-        const id = `${era.index}-${validator}-${nominator}`
+        const id = `${validator.id}-${nominator.id}`
         nominations.set(
             id,
             new EraNomination({

@@ -10,9 +10,7 @@ async function getStorageData(ctx: StorageContext, era: EraIndex): Promise<Balan
     }
 
     if (storage.isV1050) {
-        const balance = await storage.getAsV1050(era)
-        console.log(`valid era validator reward storage ${storage}, era: ${era}, balance: ${balance}`)
-        return balance
+        return await storage.getAsV1050(era)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }

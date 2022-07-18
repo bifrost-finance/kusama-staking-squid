@@ -147,7 +147,7 @@ export async function getOrCreateStakers(
     for (let i = 0; i < ledgers.length; i++) {
         if (!ledgers[i]) continue
 
-        const payeeInfo = await storage.staking.getPayee(ctx, ledgers[i]?.stash as string)
+        const payeeInfo = await storage.staking.getPayee(prevCtx, ledgers[i]?.stash as string)
         if (!payeeInfo) continue
 
         const stashId = ledgers[i]?.stash as string
