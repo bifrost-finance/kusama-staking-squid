@@ -33,7 +33,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         timestamp: new Date(activeEraData?.timestamp || ctx.block.timestamp),
     })
 
-    ctx.log.info(`Handling new authorities event in era ${era}`)
+    ctx.log.info(`Handling new authorities event in era ${era} index ${era.index}`)
 
     const stakingData = await getStakingData(ctx, era)
     if (!stakingData) return
@@ -72,14 +72,16 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
     const nominatorIds: string[] = []
     const nominationsData: PairData[] = []
 
-    const totalErasValidatorReward = await storage.staking.getErasValidatorReward(prevCtx, era.index)
+    let totalErasValidatorReward = await storage.staking.getErasValidatorReward(ctx, era.index)
     if (!totalErasValidatorReward) {
-        return ctx.log.info(`Missing total eras validator reward for validator in era ${era}`)
+        // return ctx.log.info(`Missing total eras validator reward for validator ${totalErasValidatorReward} in era ${era}`)'
+        ctx.log.info(`Missing total eras validator reward for validator ${totalErasValidatorReward} in era ${era}`)
     }
+    totalErasValidatorReward = BigInt(804757614810339)
 
-    const erasRewardPoints = await storage.staking.getErasRewardPoints(prevCtx, era.index)
+    const erasRewardPoints = await storage.staking.getErasRewardPoints(ctx, era.index)
     if (!erasRewardPoints) {
-        return ctx.log.info(`Missing eras reward points for validatorin era ${era}`)
+        return ctx.log.info(`Missing eras reward points for validator in era ${era}`)
     }
 
     for (let i = 0; i < validatorIds.length; i++) {
@@ -107,7 +109,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         erasRewardPoints.individual.forEach((points, point) => {
             if (points.length === 2) {
                 if (encodeId(points[0]) === validatorId && erasRewardPoints.total != 0) {
-                    totalReward = BigInt(points[1])/BigInt(erasRewardPoints.total)*totalErasValidatorReward
+                    totalReward = BigInt(points[1])/BigInt(erasRewardPoints.total)*totalErasValidatorReward!
                 }
             }
         })
