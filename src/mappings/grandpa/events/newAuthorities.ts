@@ -5,6 +5,7 @@ import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
 import { createPrevStorageContext } from '../../util/actions'
 import { getOrCreateStakers } from '../../util/entities'
+import { MoreThanOrEqual } from "typeorm"
 
 interface PairData {
     validator: string
@@ -82,6 +83,8 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         return ctx.log.info(`Missing eras reward points for validator in era ${era}`)
     }
 
+    const nominatorStakes: Map<string, {totalVotes: bigint, totalValidators: number}> = new Map() // nominator id => { total votes, total validators }
+
     for (let i = 0; i < validatorIds.length; i++) {
         const validatorId = validatorIds[i]
         const validatorData = validatorsData[i]
@@ -134,7 +137,61 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
                 validator: validatorId,
                 vote: nomination.vote,
             })
+
+            let stakeData = nominatorStakes.has(nomination.id)? nominatorStakes.get(nomination.id)! : {totalVotes: BigInt(0), totalValidators: 0}
+            stakeData.totalVotes += nomination.vote
+            nominatorStakes.set(nomination.id, stakeData)
         }
+    }
+
+    for (const nominatorId of nominatorStakes.keys()) {
+        const nominators = await storage.staking.getNominators(prevCtx, nominatorId)
+        if (!nominators) {
+            ctx.log.info(`Missing nominators info for nominator ${nominatorId} in era ${era}`)
+            continue
+        }
+        let stakeData = nominatorStakes.get(nominatorId)
+        if (!stakeData) {
+            continue
+        }
+        stakeData.totalValidators = nominators.targets.length
+        nominatorStakes.set(nominatorId, stakeData)
+    }
+
+    for (let i = 0; i < validatorIds.length; i++) {
+        const validatorId = validatorIds[i]
+        const validatorData = validatorsData[i]
+        if (!validatorData) {
+            ctx.log.warn(`Missing info for validator ${validatorId} in era ${era}`)
+            continue
+        }
+        let effectiveNuminatorStake = BigInt(0)
+        for (const nomination of validatorData.nominators) {
+            const stakeData = nominatorStakes.get(nomination.id)
+            if (!stakeData) {
+                continue
+            }
+            if (stakeData.totalValidators !== 0) {
+                effectiveNuminatorStake += stakeData.totalVotes/BigInt(stakeData.totalValidators)
+            }
+        }
+        let eraStaker = validators.get(validatorId)
+        if (!eraStaker) {
+            continue
+        }
+        eraStaker.effectiveNominatorStake = effectiveNuminatorStake
+        const validatorsFromDB = await ctx.store.findBy(EraStaker, { stakerId: validatorId, role: StakingRole.Validator,  era: MoreThanOrEqual(era.index-83)})
+        let totalRewards = BigInt(0)
+        for (const validator of validatorsFromDB) {
+            totalRewards += validator.totalReward
+        }
+        totalRewards += eraStaker.totalReward
+        const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
+        eraStaker.rewardScore = rewardScore / 10^12
+        const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake) + 5000)
+        eraStaker.nominatorScore = nominatorScore
+        eraStaker.totalScore = eraStaker.rewardScore * eraStaker.nominatorScore
+        validators.set(validatorId, eraStaker)
     }
 
     const nominatorStakers = new Map((await getOrCreateStakers(ctx, 'Stash', nominatorIds)).map((s) => [s.id, s]))

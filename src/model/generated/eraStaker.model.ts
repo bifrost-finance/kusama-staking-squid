@@ -43,6 +43,21 @@ export class EraStaker {
   @Column_("int4", {nullable: true})
   commission!: number | undefined | null
 
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  effectiveNominatorStake!: bigint
+
+  @Column_("numeric", {nullable: true})
+  rewardScore!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  nominatorScore!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  stableScore!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  totalScore!: number | undefined | null
+
   @OneToMany_(() => EraNomination, e => e.validator)
   nominators!: EraNomination[]
 
