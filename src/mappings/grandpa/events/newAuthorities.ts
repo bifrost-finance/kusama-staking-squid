@@ -43,7 +43,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
     era.validatorsCount = validators.length
     era.nominatorsCount = nominators.length
     era.total = validators.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n)
-    await ctx.store.insert(era)
+    await ctx.store.save(era)
 
     await ctx.store.save(validators)
     await ctx.store.save(nominators)
@@ -187,7 +187,8 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
         totalRewards += eraStaker.totalReward
         const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
-        eraStaker.rewardScore = rewardScore / 10^12
+        eraStaker.rewardScore = rewardScore / 1000000000000
+        ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
         const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake) + 5000)
         eraStaker.nominatorScore = nominatorScore
         eraStaker.totalScore = eraStaker.rewardScore * eraStaker.nominatorScore
