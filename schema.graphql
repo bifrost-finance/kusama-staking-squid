@@ -78,7 +78,7 @@ type EraStaker @entity {
   totalReward: BigInt!
   totalSlash: BigInt!
   commission: Int
-  effectiveNominatorStake: BigInt!
+  effectiveNominatorStake: BigInt
   rewardScore: Float
   nominatorScore: Float
   stableScore: Float
