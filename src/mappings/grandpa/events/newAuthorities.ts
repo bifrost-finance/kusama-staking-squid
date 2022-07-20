@@ -187,8 +187,8 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
         totalRewards += eraStaker.totalReward
         const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
-        eraStaker.rewardScore = rewardScore / 1000000000000
-        ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
+        eraStaker.rewardScore = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
+        // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
         const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
         eraStaker.nominatorScore = nominatorScore
         eraStaker.totalScore = eraStaker.rewardScore * eraStaker.nominatorScore
