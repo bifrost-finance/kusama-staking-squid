@@ -110,7 +110,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         erasRewardPoints.individual.forEach((points, point) => {
             if (points.length === 2) {
                 if (encodeId(points[0]) === validatorId && erasRewardPoints.total != 0) {
-                    totalReward = BigInt(points[1])/BigInt(erasRewardPoints.total)*totalErasValidatorReward!
+                    totalReward = BigInt(Math.floor(points[1]/erasRewardPoints.total*Number(totalErasValidatorReward!)))
                 }
             }
         })
@@ -139,7 +139,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
             })
 
             let stakeData = nominatorStakes.has(nomination.id)? nominatorStakes.get(nomination.id)! : {totalVotes: BigInt(0), totalValidators: 0}
-            stakeData.totalVotes += nomination.vote
+            stakeData.totalVotes += BigInt(nomination.vote)
             nominatorStakes.set(nomination.id, stakeData)
         }
     }
