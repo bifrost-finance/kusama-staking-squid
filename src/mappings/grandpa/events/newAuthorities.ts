@@ -181,9 +181,14 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
         eraStaker.effectiveNominatorStake = effectiveNuminatorStake
         const validatorsFromDB = await ctx.store.findBy(EraStaker, { stakerId: validatorId, role: StakingRole.Validator,  era: MoreThanOrEqual(era.index-83)})
+        const erasFromDB = await ctx.store.findBy(Era, { index: MoreThanOrEqual(era.index-83)})
         let totalRewards = BigInt(0)
+        let validatorCnt = validatorsFromDB.length
+        let eraCnt = erasFromDB.length
+        let slashCnt = 0
         for (const validator of validatorsFromDB) {
             totalRewards += validator.totalReward
+            slashCnt += Number(validator.totalSlash)
         }
         totalRewards += eraStaker.totalReward
         const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
@@ -191,6 +196,13 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
         const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
         eraStaker.nominatorScore = nominatorScore
+
+        if (eraCnt !== 0) {
+            eraStaker.stableScore = validatorCnt/eraCnt-slashCnt
+        } else {
+            eraStaker.stableScore = 0
+        }
+
         eraStaker.totalScore = eraStaker.rewardScore * eraStaker.nominatorScore
         validators.set(validatorId, eraStaker)
     }
