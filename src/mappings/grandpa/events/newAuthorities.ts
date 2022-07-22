@@ -144,12 +144,22 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
     }
 
+    const validatorNominators: Map<string, Array<string>> = new Map() // validator id => []string
+
     for (const nominatorId of nominatorStakes.keys()) {
         const nominators = await storage.staking.getNominators(prevCtx, nominatorId)
         if (!nominators) {
             ctx.log.info(`Missing nominators info for nominator ${nominatorId} in era ${era}`)
             continue
         }
+
+        for (let v of nominators.targets) {
+            const validatorID = encodeId(v)
+            let nominators = validatorNominators.has(validatorID)? validatorNominators.get(validatorID)! : []
+            nominators.push(nominatorId)
+            validatorNominators.set(validatorID, nominators)
+        }
+        
         let stakeData = nominatorStakes.get(nominatorId)
         if (!stakeData) {
             continue
@@ -160,14 +170,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
 
     for (let i = 0; i < validatorIds.length; i++) {
         const validatorId = validatorIds[i]
-        const validatorData = validatorsData[i]
-        if (!validatorData) {
-            ctx.log.warn(`Missing info for validator ${validatorId} in era ${era}`)
-            continue
-        }
+        const nominators = validatorNominators.get(validatorId) || []
         let effectiveNuminatorStake = BigInt(0)
-        for (const nomination of validatorData.nominators) {
-            const stakeData = nominatorStakes.get(nomination.id)
+        for (const nominator of nominators) {
+            const stakeData = nominatorStakes.get(nominator)
             if (!stakeData) {
                 continue
             }
