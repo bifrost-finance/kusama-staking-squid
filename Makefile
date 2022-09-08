@@ -7,11 +7,11 @@ process: migrate
 
 .PHONY: serve # run graphql server
 serve:
-	@npx squid-graphql-server
+	@npx squid-graphql-server --subscriptions
 
 .PHONY: migrate # run migrate
 migrate:
-	@npx sqd db migrate
+	@npx squid-typeorm-migration apply
 
 .PHONY: createdb # create db
 createdb:
@@ -21,17 +21,24 @@ createdb:
 build:
 	@npm run build
 
+.PHONY: build-processor-image # build processor Docker image
+build-processor-image:
+	@docker build . --target processor -t squid-processor
+
+.PHONY: build-query-node-image # build query node Docker image
+build-query-node-image:
+	@docker build . --target query-node -t query-node
+
+.PHONY: build-images # build all Docker images
+build-images: build-processor-image build-query-node-image
+
 .PHONY: codegen # generate TypeORM classes from schema.graphql
 codegen:
-	@npx sqd codegen
+	@npx squid-typeorm-codegen
 
 .PHONY: typegen # generate type-safe wrappers for events, calls and storage items
-typegen: explore
-	@npx squid-substrate-typegen ./typegen/typegen.json
-
-.PHONY: explore # generate versions.json
-explore:
-	@npx squid-substrate-metadata-explorer --chain wss://kusama-rpc.polkadot.io --archive https://kusama.archive.subsquid.io/graphql --out ./typegen/versions.json
+typegen:
+	@npx squid-substrate-typegen typegen.json
 
 .PHONY: up # run docker-compose up
 up:

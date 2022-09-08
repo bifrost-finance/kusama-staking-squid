@@ -18,11 +18,11 @@ export class EraStaker {
   stakerId!: string
 
   @Index_()
-  @ManyToOne_(() => Staker, {nullable: false})
+  @ManyToOne_(() => Staker, {nullable: true})
   staker!: Staker
 
   @Index_()
-  @ManyToOne_(() => Era, {nullable: false})
+  @ManyToOne_(() => Era, {nullable: true})
   era!: Era
 
   @Column_("varchar", {length: 9, nullable: false})
@@ -57,6 +57,30 @@ export class EraStaker {
 
   @Column_("numeric", {nullable: true})
   totalScore!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  rewardScore28!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  nominatorScore28!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  stableScore28!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  totalScore28!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  rewardScore12!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  nominatorScore12!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  stableScore12!: number | undefined | null
+
+  @Column_("numeric", {nullable: true})
+  totalScore12!: number | undefined | null
 
   @OneToMany_(() => EraNomination, e => e.validator)
   nominators!: EraNomination[]

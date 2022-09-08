@@ -83,6 +83,14 @@ type EraStaker @entity {
   nominatorScore: Float
   stableScore: Float
   totalScore: Float
+  rewardScore28: Float
+  nominatorScore28: Float
+  stableScore28: Float
+  totalScore28: Float
+  rewardScore12: Float
+  nominatorScore12: Float
+  stableScore12: Float
+  totalScore12: Float
   nominators: [EraNomination!] @derivedFrom(field: "validator")
   validators: [EraNomination!] @derivedFrom(field: "nominator")
 }

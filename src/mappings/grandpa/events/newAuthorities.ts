@@ -186,30 +186,92 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
             continue
         }
         eraStaker.effectiveNominatorStake = effectiveNuminatorStake
-        const validatorsFromDB = await ctx.store.findBy(EraStaker, { stakerId: validatorId, role: StakingRole.Validator,  era: MoreThanOrEqual(era.index-83)})
-        const erasFromDB = await ctx.store.findBy(Era, { index: MoreThanOrEqual(era.index-83)})
-        let totalRewards = BigInt(0)
-        let validatorCnt = validatorsFromDB.length
-        let eraCnt = erasFromDB.length
-        let slashCnt = 0
-        for (const validator of validatorsFromDB) {
-            totalRewards += validator.totalReward
-            slashCnt += Number(validator.totalSlash)
-        }
-        totalRewards += eraStaker.totalReward
-        const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
-        eraStaker.rewardScore = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
-        // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
-        const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
-        eraStaker.nominatorScore = nominatorScore
+        // calc scores
 
-        if (eraCnt !== 0) {
-            eraStaker.stableScore = validatorCnt/eraCnt-slashCnt
-        } else {
-            eraStaker.stableScore = 0
+        // 84 era
+        {
+            const validatorsFromDB = await ctx.store.findBy(EraStaker, { stakerId: validatorId, role: StakingRole.Validator,  era: MoreThanOrEqual(era.index-83)})
+            const erasFromDB = await ctx.store.findBy(Era, { index: MoreThanOrEqual(era.index-83)})
+            let totalRewards = BigInt(0)
+            let validatorCnt = validatorsFromDB.length
+            let eraCnt = erasFromDB.length
+            let slashCnt = 0
+            for (const validator of validatorsFromDB) {
+                totalRewards += validator.totalReward
+                slashCnt += Number(validator.totalSlash)
+            }
+            totalRewards += eraStaker.totalReward
+            const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
+            eraStaker.rewardScore = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
+            // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
+            const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
+            eraStaker.nominatorScore = nominatorScore
+
+            if (eraCnt !== 0) {
+                eraStaker.stableScore = validatorCnt/eraCnt-slashCnt
+            } else {
+                eraStaker.stableScore = 0
+            }
+
+            eraStaker.totalScore = eraStaker.rewardScore * eraStaker.nominatorScore
         }
 
-        eraStaker.totalScore = eraStaker.rewardScore * eraStaker.nominatorScore
+        // 28 era
+        {
+            const validatorsFromDB = await ctx.store.findBy(EraStaker, { stakerId: validatorId, role: StakingRole.Validator,  era: MoreThanOrEqual(era.index-28)})
+            const erasFromDB = await ctx.store.findBy(Era, { index: MoreThanOrEqual(era.index-28)})
+            let totalRewards = BigInt(0)
+            let validatorCnt = validatorsFromDB.length
+            let eraCnt = erasFromDB.length
+            let slashCnt = 0
+            for (const validator of validatorsFromDB) {
+                totalRewards += validator.totalReward
+                slashCnt += Number(validator.totalSlash)
+            }
+            totalRewards += eraStaker.totalReward
+            const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
+            eraStaker.rewardScore28 = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
+            // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
+            const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
+            eraStaker.nominatorScore28 = nominatorScore
+
+            if (eraCnt !== 0) {
+                eraStaker.stableScore28 = validatorCnt/eraCnt-slashCnt
+            } else {
+                eraStaker.stableScore28 = 0
+            }
+
+            eraStaker.totalScore28 = eraStaker.rewardScore28 * eraStaker.nominatorScore28
+        }
+
+        // 12 era
+        {
+            const validatorsFromDB = await ctx.store.findBy(EraStaker, { stakerId: validatorId, role: StakingRole.Validator,  era: MoreThanOrEqual(era.index-12)})
+            const erasFromDB = await ctx.store.findBy(Era, { index: MoreThanOrEqual(era.index-12)})
+            let totalRewards = BigInt(0)
+            let validatorCnt = validatorsFromDB.length
+            let eraCnt = erasFromDB.length
+            let slashCnt = 0
+            for (const validator of validatorsFromDB) {
+                totalRewards += validator.totalReward
+                slashCnt += Number(validator.totalSlash)
+            }
+            totalRewards += eraStaker.totalReward
+            const rewardScore = Number(totalRewards)/(validatorsFromDB.length+1)
+            eraStaker.rewardScore12 = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
+            // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
+            const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
+            eraStaker.nominatorScore12 = nominatorScore
+
+            if (eraCnt !== 0) {
+                eraStaker.stableScore12 = validatorCnt/eraCnt-slashCnt
+            } else {
+                eraStaker.stableScore12 = 0
+            }
+
+            eraStaker.totalScore12 = eraStaker.rewardScore12 * eraStaker.nominatorScore12
+        }
+
         validators.set(validatorId, eraStaker)
     }
 
