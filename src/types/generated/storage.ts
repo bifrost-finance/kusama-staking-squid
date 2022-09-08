@@ -28,7 +28,7 @@ export class SessionValidatorsStorage {
   /**
    *  The current set of validators.
    */
-  async getAsV1020(): Promise<v1020.ValidatorId[]> {
+  async getAsV1020(): Promise<Uint8Array[]> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Session', 'Validators')
   }
@@ -104,14 +104,19 @@ export class StakingBondedStorage {
   /**
    *  Map from all locked "stash" accounts to the controller account.
    */
-  async getAsV1020(key: v1020.AccountId): Promise<v1020.AccountId | undefined> {
+  async getAsV1020(key: Uint8Array): Promise<Uint8Array | undefined> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Bonded', key)
   }
 
-  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.AccountId | undefined)[]> {
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(Uint8Array | undefined)[]> {
     assert(this.isV1020)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Bonded', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(Uint8Array)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Bonded')
   }
 
   /**
@@ -144,7 +149,7 @@ export class StakingCurrentEraStorage {
   /**
    *  The current era index.
    */
-  async getAsV1020(): Promise<v1020.EraIndex> {
+  async getAsV1020(): Promise<number> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Staking', 'CurrentEra')
   }
@@ -165,7 +170,7 @@ export class StakingCurrentEraStorage {
    *  This is the latest planned era, depending on how session module queues the validator
    *  set, it might be active or not.
    */
-  async getAsV1050(): Promise<v1050.EraIndex | undefined> {
+  async getAsV1050(): Promise<number | undefined> {
     assert(this.isV1050)
     return this._chain.getStorage(this.blockHash, 'Staking', 'CurrentEra')
   }
@@ -202,14 +207,19 @@ export class StakingErasRewardPointsStorage {
    *  Rewards for the last `HISTORY_DEPTH` eras.
    *  If reward hasn't been set or has been removed then 0 reward is returned.
    */
-  async getAsV1050(key: v1050.EraIndex): Promise<v1050.EraRewardPoints> {
+  async getAsV1050(key: number): Promise<v1050.EraRewardPoints> {
     assert(this.isV1050)
     return this._chain.getStorage(this.blockHash, 'Staking', 'ErasRewardPoints', key)
   }
 
-  async getManyAsV1050(keys: v1050.EraIndex[]): Promise<(v1050.EraRewardPoints)[]> {
+  async getManyAsV1050(keys: number[]): Promise<(v1050.EraRewardPoints)[]> {
     assert(this.isV1050)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasRewardPoints', keys.map(k => [k]))
+  }
+
+  async getAllAsV1050(): Promise<(v1050.EraRewardPoints)[]> {
+    assert(this.isV1050)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasRewardPoints')
   }
 
   /**
@@ -252,14 +262,19 @@ export class StakingErasStakersStorage {
    *  Is it removed after `HISTORY_DEPTH` eras.
    *  If stakers hasn't been set or has been removed then empty exposure is returned.
    */
-  async getAsV1050(key1: v1050.EraIndex, key2: v1050.AccountId): Promise<v1050.Exposure> {
+  async getAsV1050(key1: number, key2: Uint8Array): Promise<v1050.Exposure> {
     assert(this.isV1050)
     return this._chain.getStorage(this.blockHash, 'Staking', 'ErasStakers', key1, key2)
   }
 
-  async getManyAsV1050(keys: [v1050.EraIndex, v1050.AccountId][]): Promise<(v1050.Exposure)[]> {
+  async getManyAsV1050(keys: [number, Uint8Array][]): Promise<(v1050.Exposure)[]> {
     assert(this.isV1050)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasStakers', keys)
+  }
+
+  async getAllAsV1050(): Promise<(v1050.Exposure)[]> {
+    assert(this.isV1050)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasStakers')
   }
 
   /**
@@ -296,14 +311,19 @@ export class StakingErasValidatorRewardStorage {
    * 
    *  Eras that haven't finished yet or has been removed doesn't have reward.
    */
-  async getAsV1050(key: v1050.EraIndex): Promise<v1050.BalanceOf | undefined> {
+  async getAsV1050(key: number): Promise<bigint | undefined> {
     assert(this.isV1050)
     return this._chain.getStorage(this.blockHash, 'Staking', 'ErasValidatorReward', key)
   }
 
-  async getManyAsV1050(keys: v1050.EraIndex[]): Promise<(v1050.BalanceOf | undefined)[]> {
+  async getManyAsV1050(keys: number[]): Promise<(bigint | undefined)[]> {
     assert(this.isV1050)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasValidatorReward', keys.map(k => [k]))
+  }
+
+  async getAllAsV1050(): Promise<(bigint)[]> {
+    assert(this.isV1050)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasValidatorReward')
   }
 
   /**
@@ -336,14 +356,19 @@ export class StakingLedgerStorage {
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  async getAsV1020(key: v1020.AccountId): Promise<v1020.StakingLedger | undefined> {
+  async getAsV1020(key: Uint8Array): Promise<v1020.StakingLedger | undefined> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Ledger', key)
   }
 
-  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.StakingLedger | undefined)[]> {
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.StakingLedger | undefined)[]> {
     assert(this.isV1020)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(v1020.StakingLedger)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger')
   }
 
   /**
@@ -356,14 +381,19 @@ export class StakingLedgerStorage {
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  async getAsV1050(key: v1050.AccountId): Promise<v1050.StakingLedger | undefined> {
+  async getAsV1050(key: Uint8Array): Promise<v1050.StakingLedger | undefined> {
     assert(this.isV1050)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Ledger', key)
   }
 
-  async getManyAsV1050(keys: v1050.AccountId[]): Promise<(v1050.StakingLedger | undefined)[]> {
+  async getManyAsV1050(keys: Uint8Array[]): Promise<(v1050.StakingLedger | undefined)[]> {
     assert(this.isV1050)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger', keys.map(k => [k]))
+  }
+
+  async getAllAsV1050(): Promise<(v1050.StakingLedger)[]> {
+    assert(this.isV1050)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger')
   }
 
   /**
@@ -376,14 +406,19 @@ export class StakingLedgerStorage {
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  async getAsV1058(key: v1058.AccountId): Promise<v1058.StakingLedger | undefined> {
+  async getAsV1058(key: Uint8Array): Promise<v1058.StakingLedger | undefined> {
     assert(this.isV1058)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Ledger', key)
   }
 
-  async getManyAsV1058(keys: v1058.AccountId[]): Promise<(v1058.StakingLedger | undefined)[]> {
+  async getManyAsV1058(keys: Uint8Array[]): Promise<(v1058.StakingLedger | undefined)[]> {
     assert(this.isV1058)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger', keys.map(k => [k]))
+  }
+
+  async getAllAsV1058(): Promise<(v1058.StakingLedger)[]> {
+    assert(this.isV1058)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger')
   }
 
   /**
@@ -422,14 +457,19 @@ export class StakingNominatorsStorage {
    *  NOTE: is private so that we can ensure upgraded before all typical accesses.
    *  Direct storage APIs can still bypass this protection.
    */
-  async getAsV1020(key: v1020.AccountId): Promise<v1020.Nominations | undefined> {
+  async getAsV1020(key: Uint8Array): Promise<v1020.Nominations | undefined> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Nominators', key)
   }
 
-  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.Nominations | undefined)[]> {
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.Nominations | undefined)[]> {
     assert(this.isV1020)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Nominators', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(v1020.Nominations)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Nominators')
   }
 
   /**
@@ -462,14 +502,19 @@ export class StakingPayeeStorage {
   /**
    *  Where the reward payment should be made. Keyed by stash.
    */
-  async getAsV1020(key: v1020.AccountId): Promise<v1020.RewardDestination> {
+  async getAsV1020(key: Uint8Array): Promise<v1020.RewardDestination> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Payee', key)
   }
 
-  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.RewardDestination)[]> {
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.RewardDestination)[]> {
     assert(this.isV1020)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(v1020.RewardDestination)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee')
   }
 
   /**
@@ -482,14 +527,19 @@ export class StakingPayeeStorage {
   /**
    *  Where the reward payment should be made. Keyed by stash.
    */
-  async getAsV9111(key: v9111.AccountId32): Promise<v9111.RewardDestination> {
+  async getAsV9111(key: Uint8Array): Promise<v9111.RewardDestination> {
     assert(this.isV9111)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Payee', key)
   }
 
-  async getManyAsV9111(keys: v9111.AccountId32[]): Promise<(v9111.RewardDestination)[]> {
+  async getManyAsV9111(keys: Uint8Array[]): Promise<(v9111.RewardDestination)[]> {
     assert(this.isV9111)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee', keys.map(k => [k]))
+  }
+
+  async getAllAsV9111(): Promise<(v9111.RewardDestination)[]> {
+    assert(this.isV9111)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee')
   }
 
   /**
@@ -528,14 +578,19 @@ export class StakingStakersStorage {
    * 
    *  This is keyed by the stash account.
    */
-  async getAsV1020(key: v1020.AccountId): Promise<v1020.Exposure> {
+  async getAsV1020(key: Uint8Array): Promise<v1020.Exposure> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Stakers', key)
   }
 
-  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.Exposure)[]> {
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.Exposure)[]> {
     assert(this.isV1020)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Stakers', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(v1020.Exposure)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Stakers')
   }
 
   /**
@@ -568,14 +623,19 @@ export class StakingValidatorsStorage {
   /**
    *  The map from (wannabe) validator stash key to the preferences of that validator.
    */
-  async getAsV1020(key: v1020.AccountId): Promise<v1020.ValidatorPrefs> {
+  async getAsV1020(key: Uint8Array): Promise<v1020.ValidatorPrefs> {
     assert(this.isV1020)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Validators', key)
   }
 
-  async getManyAsV1020(keys: v1020.AccountId[]): Promise<(v1020.ValidatorPrefs)[]> {
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.ValidatorPrefs)[]> {
     assert(this.isV1020)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(v1020.ValidatorPrefs)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators')
   }
 
   /**
@@ -588,14 +648,19 @@ export class StakingValidatorsStorage {
   /**
    *  The map from (wannabe) validator stash key to the preferences of that validator.
    */
-  async getAsV2028(key: v2028.AccountId): Promise<v2028.ValidatorPrefs> {
+  async getAsV2028(key: Uint8Array): Promise<v2028.ValidatorPrefs> {
     assert(this.isV2028)
     return this._chain.getStorage(this.blockHash, 'Staking', 'Validators', key)
   }
 
-  async getManyAsV2028(keys: v2028.AccountId[]): Promise<(v2028.ValidatorPrefs)[]> {
+  async getManyAsV2028(keys: Uint8Array[]): Promise<(v2028.ValidatorPrefs)[]> {
     assert(this.isV2028)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators', keys.map(k => [k]))
+  }
+
+  async getAllAsV2028(): Promise<(v2028.ValidatorPrefs)[]> {
+    assert(this.isV2028)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators')
   }
 
   /**

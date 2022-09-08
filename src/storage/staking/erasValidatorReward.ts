@@ -1,9 +1,8 @@
 import { UnknownVersionError } from '../../common/errors'
 import { StakingErasValidatorRewardStorage } from '../../types/generated/storage'
-import { EraIndex, BalanceOf } from '../../types/generated/v1050'
 import { BlockContext as StorageContext } from '../../types/generated/support'
 
-async function getStorageData(ctx: StorageContext, era: EraIndex): Promise<BalanceOf | undefined> {
+async function getStorageData(ctx: StorageContext, era: number): Promise<bigint | undefined> {
     const storage = new StakingErasValidatorRewardStorage(ctx)
     if (!storage.isExists) {
         return undefined
@@ -16,6 +15,6 @@ async function getStorageData(ctx: StorageContext, era: EraIndex): Promise<Balan
     }
 }
 
-export async function getErasValidatorReward(ctx: StorageContext, era: EraIndex): Promise<BalanceOf | undefined> {
+export async function getErasValidatorReward(ctx: StorageContext, era: number): Promise<bigint | undefined> {
     return await getStorageData(ctx, era)
 }

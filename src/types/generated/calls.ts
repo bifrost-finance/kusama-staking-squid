@@ -2,7 +2,6 @@ import assert from 'assert'
 import {Chain, ChainContext, CallContext, Call, Result} from './support'
 import * as v1020 from './v1020'
 import * as v1050 from './v1050'
-import * as v1058 from './v1058'
 import * as v2028 from './v2028'
 import * as v9111 from './v9111'
 
@@ -100,7 +99,7 @@ export class StakingBondCall {
    *  the `origin` falls below _existential deposit_ and gets removed as dust.
    *  # </weight>
    */
-  get asV1050(): {controller: v1050.LookupSource, value: bigint, payee: v1050.RewardDestination} {
+  get asV1050(): {controller: Uint8Array, value: bigint, payee: v1050.RewardDestination} {
     assert(this.isV1050)
     return this._chain.decodeCall(this.call)
   }
@@ -480,7 +479,7 @@ export class StakingNominateCall {
    *  - Both the reads and writes follow a similar pattern.
    *  # </weight>
    */
-  get asV1050(): {targets: v1050.LookupSource[]} {
+  get asV1050(): {targets: Uint8Array[]} {
     assert(this.isV1050)
     return this._chain.decodeCall(this.call)
   }
@@ -623,7 +622,7 @@ export class StakingPayoutStakersCall {
    *  - Contains a limited number of reads and writes.
    *  # </weight>
    */
-  get asV1058(): {validatorStash: v1058.AccountId, era: v1058.EraIndex} {
+  get asV1058(): {validatorStash: Uint8Array, era: number} {
     assert(this.isV1058)
     return this._chain.decodeCall(this.call)
   }
@@ -707,7 +706,7 @@ export class StakingSetControllerCall {
    *  - Writes are limited to the `origin` account key.
    *  # </weight>
    */
-  get asV1050(): {controller: v1050.LookupSource} {
+  get asV1050(): {controller: Uint8Array} {
     assert(this.isV1050)
     return this._chain.decodeCall(this.call)
   }

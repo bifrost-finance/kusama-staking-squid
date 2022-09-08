@@ -2,11 +2,10 @@ import { decodeId, encodeId } from '../../common/tools'
 import { UnknownVersionError } from '../../common/errors'
 import { StakingNominatorsStorage } from '../../types/generated/storage'
 import { BlockContext as StorageContext } from '../../types/generated/support'
-import { AccountId, EraIndex } from '../../types/generated/v1020'
 
 interface StorageData {
-  targets: AccountId[]
-  submittedIn: EraIndex
+  targets: Uint8Array[]
+  submittedIn: number
   suppressed: boolean
 }
 
@@ -28,8 +27,8 @@ async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise
 }
 
 interface Nominations {
-  targets: AccountId[]
-  submittedIn: EraIndex
+  targets: Uint8Array[]
+  submittedIn: number
   suppressed: boolean
 }
 

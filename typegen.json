@@ -1,5 +1,5 @@
 {
-  "outDir": "../src/types/generated",
+  "outDir": "src/types/generated",
   "specVersions": "https://kusama.archive.subsquid.io/graphql",
   "events": [
     "Staking.EraPaid",
