@@ -9,9 +9,9 @@ const config: ProcessorConfig = {
         chain: 'wss://kusama-rpc.liebi.com/ws' // 'wss://kusama.api.onfinality.io/public-ws' // 'wss://kusama-rpc.polkadot.io'
     },
     typesBundle: 'kusama',
-    batchSize: 100,
+    batchSize: 10,
     blockRange: {
-        from: 13400000,
+        from: 14208677,
     },
 }
 
