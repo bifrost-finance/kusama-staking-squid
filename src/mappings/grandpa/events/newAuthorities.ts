@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { isStorageCorrupted, decodeId, encodeId } from '../../../common/tools'
+import { isStorageCorrupted, decodeId, encodeId, createApi } from '../../../common/tools'
 import { Era, EraNomination, EraStaker, StakingRole } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
@@ -56,10 +56,18 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
 
     const prevCtx = createPrevStorageContext(ctx)
 
-    const validatorIds = await storage.session.getValidators(prevCtx)
-    if (!validatorIds) {
+    // const validatorIds = await storage.session.getValidators(prevCtx)
+    // if (!validatorIds) {
+    //     return ctx.log.warn(`Validators for era ${era} not found`)
+    // }
+
+    const api = await createApi()
+    const apiCtx = await api.at(ctx.block.hash)
+    const keys = await apiCtx.query.staking.validators.keys()
+    if (!keys) {
         return ctx.log.warn(`Validators for era ${era} not found`)
     }
+    const validatorIds = keys.map(({ args: [validatorId] }) => validatorId.toString());
 
     const validatorsData = await storage.staking.getEraStakersData(
         prevCtx,

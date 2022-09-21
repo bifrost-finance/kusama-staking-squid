@@ -2,6 +2,7 @@ import * as ss58 from '@subsquid/ss58'
 import config from '../config'
 import { decodeHex } from '@subsquid/util-internal-hex'
 import { CommonHandlerContext } from '@subsquid/substrate-processor'
+import { ApiPromise, WsProvider } from '@polkadot/api';
 
 export function encodeId(id: Uint8Array) {
     return ss58.codec(config.prefix).encode(id)
@@ -66,4 +67,12 @@ export function saturatingSumBigInt(
 
 export function isStorageCorrupted(ctx: CommonHandlerContext<unknown>) {
     return ctx.block.height >= 1375087 && ctx.block.height <= 1600000
+}
+
+export async function createApi(): Promise<ApiPromise> {
+    const provider = new WsProvider(config.dataSource.chain);
+    const api = await ApiPromise.create({ provider, types: {} });
+    await api.isReady;
+    console.log(`Connected to substrate node: ${config.dataSource.chain}`);
+    return api;
 }
