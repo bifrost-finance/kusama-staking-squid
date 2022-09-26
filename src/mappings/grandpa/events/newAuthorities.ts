@@ -216,7 +216,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
                 totalRewards += eraStaker.totalReward
                 rewardCnt++
             }
-            const rewardScore = Number(totalRewards)/rewardCnt
+            let rewardScore = 0;
+            if (rewardCnt !== 0) {
+                rewardScore = Number(totalRewards)/rewardCnt
+            }
             eraStaker.rewardScore = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
             // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
             const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
@@ -251,7 +254,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
                 totalRewards += eraStaker.totalReward
                 rewardCnt++
             }
-            const rewardScore = Number(totalRewards)/rewardCnt
+            let rewardScore = 0;
+            if (rewardCnt !== 0) {
+                rewardScore = Number(totalRewards)/rewardCnt
+            }
             eraStaker.rewardScore28 = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
             // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
             const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
@@ -286,7 +292,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
                 totalRewards += eraStaker.totalReward
                 rewardCnt++
             }
-            const rewardScore = Number(totalRewards)/rewardCnt
+            let rewardScore = 0;
+            if (rewardCnt !== 0) {
+                rewardScore = Number(totalRewards)/rewardCnt
+            }
             eraStaker.rewardScore12 = rewardScore / 1000000000000 * (1-eraStaker.commission!/1000000000)
             // ctx.log.info(`Validator ${validatorId} total rewards: ${totalRewards}, era total reward: ${eraStaker.totalReward}, reward score: ${eraStaker.rewardScore}`)
             const nominatorScore = 5000 / (Number(eraStaker.effectiveNominatorStake)/1000000000000 + 5000)
