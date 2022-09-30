@@ -11,7 +11,7 @@ const config: ProcessorConfig = {
     typesBundle: 'kusama',
     batchSize: 10,
     blockRange: {
-        from: 14208677,
+        from: 14700000,
     },
 }
 
