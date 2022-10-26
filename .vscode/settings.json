@@ -5,5 +5,6 @@
     "crowdloans",
     "Parachain",
     "parachains"
-  ]
+  ],
+  "dotenv.enableAutocloaking": false
 }
