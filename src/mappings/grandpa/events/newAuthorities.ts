@@ -106,7 +106,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
             ctx.log.warn(`Missing info for staker ${validatorId} in era ${era}`)
             continue
         }
-        assert(staker != null)
+        if (!staker) {
+            continue
+        }
+        // assert(staker != null)
 
         const validatorInfo = await storage.staking.getValidators(prevCtx, validatorId)
         if (!validatorInfo) {
@@ -325,7 +328,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
             ctx.log.warn(`Missing info for staker ${nominatorId} in era ${era}`)
             continue
         }
-        assert(staker != null)
+        if (!staker) {
+            continue
+        }
+        // assert(staker != null)
 
         nominators.set(
             nominatorId,
@@ -351,9 +357,12 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
             ctx.log.warn(`Missing info for stakers`)
             continue
         }
-        assert(validator != null && nominator != null)
+        if (validator != null || nominator != null) {
+            continue
+        }
+        // assert(validator != null && nominator != null)
 
-        const id = `${validator.id}-${nominator.id}`
+        const id = `${validator!.id}-${nominator!.id}`
         nominations.set(
             id,
             new EraNomination({

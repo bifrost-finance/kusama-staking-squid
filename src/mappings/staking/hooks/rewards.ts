@@ -139,7 +139,8 @@ export async function rewardsHook(ctx: BlockHandlerContext<typeof rewardsRequest
         for (const rewardData of callRewardsData) {
             const { accountId, amount } = rewardData
             const staker = stakers.get(accountId)
-            if (!staker && isStorageCorrupted(ctx)) return
+            // if (!staker && isStorageCorrupted(ctx)) return
+            if (!staker) return
             assert(staker != null, `Missing staking info for ${accountId}`)
 
             const account = staker.payee

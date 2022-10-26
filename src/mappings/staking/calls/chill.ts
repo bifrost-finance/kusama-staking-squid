@@ -11,7 +11,8 @@ export async function handleChill(ctx: CallHandlerContext) {
     if (!controllerId) return
 
     const staker = await getOrCreateStaker(ctx, 'Controller', controllerId)
-    if (!staker && isStorageCorrupted(ctx)) return
+    // if (!staker && isStorageCorrupted(ctx)) return
+    if (!staker) return
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Idle
