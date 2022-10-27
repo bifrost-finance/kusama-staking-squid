@@ -1,6 +1,6 @@
 import * as ss58 from '@subsquid/ss58'
 import config from '../config'
-import { decodeHex } from '@subsquid/util-internal-hex'
+import { decodeHex, isHex } from '@subsquid/util-internal-hex'
 import { CommonHandlerContext } from '@subsquid/substrate-processor'
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
@@ -41,6 +41,9 @@ export function getOriginAccountId(origin: any) {
             // eslint-disable-next-line sonarjs/no-nested-switch, sonarjs/no-small-switch
             switch (origin.value.__kind) {
                 case 'Signed':
+                    if (!isHex(origin.value.value)) {
+                        return undefined
+                    }
                     return encodeId(decodeHex(origin.value.value))
                 default:
                     return undefined
