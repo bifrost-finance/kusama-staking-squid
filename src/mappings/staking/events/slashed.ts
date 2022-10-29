@@ -23,6 +23,12 @@ function getSlashedEvent(ctx: EventContext): EventData {
             account,
             amount,
         }
+    } else if (event.isV9300) {
+        const {staker, amount} = event.asV9300
+        return {
+            account: staker,
+            amount,
+        }
     } else {
         throw new UnknownVersionError(event.constructor.name)
     }
